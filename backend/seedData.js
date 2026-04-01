@@ -7,6 +7,11 @@ const User = require('./models/User');
 const Course = require('./models/Course');
 const Progress = require('./models/Progress');
 
+function makeCertificateId() {
+  const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `CERT-${Date.now()}-${rand}`;
+}
+
 const sampleUsers = [
   {
     name: 'Admin User',
@@ -105,6 +110,39 @@ const sampleUsers = [
     experienceLevel: 'Beginner',
     currentStreak: 2,
     longestStreak: 4,
+    lastLoginAt: new Date()
+  },
+  {
+    name: 'Priya Nair',
+    email: 'priya@example.com',
+    password: 'priya123',
+    role: 'student',
+    interests: ['DevOps', 'Cloud Computing'],
+    experienceLevel: 'Intermediate',
+    currentStreak: 5,
+    longestStreak: 9,
+    lastLoginAt: new Date()
+  },
+  {
+    name: 'Arun Kumar',
+    email: 'arun@example.com',
+    password: 'arun123',
+    role: 'student',
+    interests: ['Cybersecurity', 'Data Science'],
+    experienceLevel: 'Beginner',
+    currentStreak: 2,
+    longestStreak: 5,
+    lastLoginAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+  },
+  {
+    name: 'Nisha Patel',
+    email: 'nisha@example.com',
+    password: 'nisha123',
+    role: 'student',
+    interests: ['Web Development', 'Mobile Development'],
+    experienceLevel: 'Advanced',
+    currentStreak: 11,
+    longestStreak: 16,
     lastLoginAt: new Date()
   }
 ];
@@ -3265,6 +3303,173 @@ Master these widgets and you can build any UI you imagine! 🎨`,
   }
 ];
 
+const extraCourses = [
+  {
+    title: 'DevOps Fundamentals with CI/CD',
+    description: 'Learn practical DevOps workflows, automation, and release pipelines.',
+    category: 'Cloud Computing',
+    difficulty: 'Intermediate',
+    duration: '20 hours',
+    instructor: 'Eng. Robert Miles',
+    modules: [
+      {
+        title: 'DevOps Foundations',
+        description: 'Understand culture, collaboration, and delivery flow.',
+        duration: '3 hours',
+        content: 'DevOps combines development and operations to deliver software faster and more reliably.',
+        quiz: [
+          {
+            question: 'What is a key DevOps objective?',
+            options: ['Slow releases', 'Faster reliable delivery', 'Manual everything', 'No testing'],
+            correctIndex: 1
+          },
+          {
+            question: 'Which practice supports continuous feedback?',
+            options: ['Monitoring', 'Ignoring logs', 'Weekly deploy only', 'Big-bang releases'],
+            correctIndex: 0
+          },
+          {
+            question: 'DevOps encourages collaboration between:',
+            options: ['Only developers', 'Only admins', 'Dev and Ops teams', 'Customers and sales only'],
+            correctIndex: 2
+          }
+        ],
+        order: 1
+      },
+      {
+        title: 'CI/CD Pipelines',
+        description: 'Build, test, and deploy automatically.',
+        duration: '4 hours',
+        content: 'CI/CD pipelines automate build, test, and deployment stages.',
+        quiz: [
+          {
+            question: 'CI stands for:',
+            options: ['Continuous Integration', 'Code Inspection', 'Cloud Instance', 'Centralized Infrastructure'],
+            correctIndex: 0
+          },
+          {
+            question: 'A pipeline should run tests:',
+            options: ['Never', 'Only monthly', 'On every meaningful change', 'After production incidents only'],
+            correctIndex: 2
+          },
+          {
+            question: 'CD most commonly means:',
+            options: ['Continuous Delivery/Deployment', 'Code Deletion', 'Container Design', 'Centralized Development'],
+            correctIndex: 0
+          }
+        ],
+        order: 2
+      },
+      {
+        title: 'Infrastructure as Code',
+        description: 'Provision environments with repeatable definitions.',
+        duration: '3 hours',
+        content: 'IaC helps teams version and automate infrastructure setup.',
+        quiz: [
+          {
+            question: 'IaC primarily improves:',
+            options: ['Randomness', 'Repeatability', 'Manual effort', 'Downtime windows'],
+            correctIndex: 1
+          },
+          {
+            question: 'IaC files should be stored in:',
+            options: ['Version control', 'Email threads', 'Screenshots', 'Spreadsheets only'],
+            correctIndex: 0
+          },
+          {
+            question: 'A key IaC benefit is:',
+            options: ['Configuration drift reduction', 'More manual changes', 'No automation', 'No reviews'],
+            correctIndex: 0
+          }
+        ],
+        order: 3
+      }
+    ]
+  },
+  {
+    title: 'Practical SQL for Data Analytics',
+    description: 'Use SQL queries for reporting, insights, and dashboards.',
+    category: 'Data Science',
+    difficulty: 'Beginner',
+    duration: '18 hours',
+    instructor: 'Dr. Elena Park',
+    modules: [
+      {
+        title: 'SQL Basics',
+        description: 'SELECT, WHERE, ORDER BY and LIMIT.',
+        duration: '3 hours',
+        content: 'SQL retrieves and transforms structured data from relational databases.',
+        quiz: [
+          {
+            question: 'Which clause filters rows?',
+            options: ['ORDER BY', 'WHERE', 'GROUP BY', 'FROM'],
+            correctIndex: 1
+          },
+          {
+            question: 'Which statement reads data?',
+            options: ['INSERT', 'UPDATE', 'SELECT', 'DELETE'],
+            correctIndex: 2
+          },
+          {
+            question: 'LIMIT is used to:',
+            options: ['Rename columns', 'Sort data', 'Restrict returned rows', 'Create tables'],
+            correctIndex: 2
+          }
+        ],
+        order: 1
+      },
+      {
+        title: 'Joins and Aggregations',
+        description: 'Combine tables and summarize data.',
+        duration: '4 hours',
+        content: 'JOIN and GROUP BY enable relational analysis and metrics.',
+        quiz: [
+          {
+            question: 'Which join returns matching rows from both tables?',
+            options: ['INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN'],
+            correctIndex: 0
+          },
+          {
+            question: 'COUNT() is a:',
+            options: ['String function', 'Aggregate function', 'Date function', 'Window filter'],
+            correctIndex: 1
+          },
+          {
+            question: 'GROUP BY is used with:',
+            options: ['Aggregations', 'Table creation', 'Index drops', 'Transaction rollback'],
+            correctIndex: 0
+          }
+        ],
+        order: 2
+      },
+      {
+        title: 'Analytical Query Patterns',
+        description: 'Write practical business analytics queries.',
+        duration: '3 hours',
+        content: 'Build retention, conversion, and cohort style queries.',
+        quiz: [
+          {
+            question: 'Which clause is evaluated after GROUP BY for filtering groups?',
+            options: ['WHERE', 'HAVING', 'ORDER BY', 'LIMIT'],
+            correctIndex: 1
+          },
+          {
+            question: 'A common KPI query pattern is:',
+            options: ['DELETE all rows', 'Aggregate over time', 'Drop indexes first', 'Disable constraints'],
+            correctIndex: 1
+          },
+          {
+            question: 'Good analytical SQL should be:',
+            options: ['Unreadable', 'Deterministic and reviewed', 'Randomized', 'Unversioned'],
+            correctIndex: 1
+          }
+        ],
+        order: 3
+      }
+    ]
+  }
+];
+
 async function seedDatabase() {
   try {
     // Connect to MongoDB
@@ -3278,8 +3483,9 @@ async function seedDatabase() {
     console.log('Cleared existing data');
 
     // Hash passwords and create users
+    const allUsers = [...sampleUsers];
     const usersWithHashedPasswords = await Promise.all(
-      sampleUsers.map(async (user) => {
+      allUsers.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return { ...user, password: hashedPassword };
       })
@@ -3289,7 +3495,8 @@ async function seedDatabase() {
     console.log(`Created ${createdUsers.length} users`);
 
     // Create courses
-    const coursesWithCreator = sampleCourses.map(course => ({
+    const allCourses = [...sampleCourses, ...extraCourses];
+    const coursesWithCreator = allCourses.map(course => ({
       ...course,
       createdBy: createdUsers[0]._id // Assign to admin
     }));
@@ -3307,6 +3514,9 @@ async function seedDatabase() {
     const sarah = createdUsers[6];
     const tom = createdUsers[7];
     const emily = createdUsers[8];
+    const priya = createdUsers[9];
+    const arun = createdUsers[10];
+    const nisha = createdUsers[11];
 
     // Enroll users in various courses
     john.enrolledCourses = [createdCourses[0]._id, createdCourses[4]._id]; // Web Dev, Flutter
@@ -3317,8 +3527,23 @@ async function seedDatabase() {
     sarah.enrolledCourses = [createdCourses[1]._id, createdCourses[8]._id, createdCourses[5]._id]; // Python, Deep Learning, AWS
     tom.enrolledCourses = [createdCourses[6]._id, createdCourses[5]._id]; // Cybersecurity, AWS
     emily.enrolledCourses = [createdCourses[3]._id, createdCourses[1]._id]; // ML, Python
+    priya.enrolledCourses = [createdCourses[10]._id, createdCourses[5]._id]; // DevOps, AWS
+    arun.enrolledCourses = [createdCourses[11]._id, createdCourses[6]._id]; // SQL, Cybersecurity
+    nisha.enrolledCourses = [createdCourses[2]._id, createdCourses[10]._id]; // React, DevOps
 
-    await Promise.all([john.save(), jane.save(), alex.save(), maria.save(), david.save(), sarah.save(), tom.save(), emily.save()]);
+    await Promise.all([
+      john.save(),
+      jane.save(),
+      alex.save(),
+      maria.save(),
+      david.save(),
+      sarah.save(),
+      tom.save(),
+      emily.save(),
+      priya.save(),
+      arun.save(),
+      nisha.save()
+    ]);
 
     // John: 50% on Web Dev, 20% on Flutter
     await Progress.create({
@@ -3350,8 +3575,8 @@ async function seedDatabase() {
       progressPercentage: 100,
       status: 'completed',
       completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      certificateId: null,
-      certificateIssuedAt: null,
+      certificateId: makeCertificateId(),
+      certificateIssuedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
       quizResults: [
         { moduleId: String(createdCourses[1].modules[0]._id), score: 3, total: 3, passed: true, attemptedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
         { moduleId: String(createdCourses[1].modules[1]._id), score: 2, total: 3, passed: true, attemptedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000) }
@@ -3376,6 +3601,8 @@ async function seedDatabase() {
       progressPercentage: 100,
       status: 'completed',
       completedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+      certificateId: makeCertificateId(),
+      certificateIssuedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
       quizResults: [
         { moduleId: String(createdCourses[5].modules[0]._id), score: 3, total: 3, passed: true, attemptedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000) },
         { moduleId: String(createdCourses[5].modules[1]._id), score: 3, total: 3, passed: true, attemptedAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000) }
@@ -3455,6 +3682,8 @@ async function seedDatabase() {
       progressPercentage: 100,
       status: 'completed',
       completedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+      certificateId: makeCertificateId(),
+      certificateIssuedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
       quizResults: [
         { moduleId: String(createdCourses[1].modules[0]._id), score: 3, total: 3, passed: true, attemptedAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000) },
         { moduleId: String(createdCourses[1].modules[1]._id), score: 3, total: 3, passed: true, attemptedAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000) }
@@ -3513,6 +3742,74 @@ async function seedDatabase() {
       status: 'in-progress'
     });
 
+    // Priya: completed DevOps with certificate, 66% AWS
+    await Progress.create({
+      userId: priya._id,
+      courseId: createdCourses[10]._id,
+      completedModules: createdCourses[10].modules.map((m) => ({ moduleId: String(m._id) })),
+      progressPercentage: 100,
+      status: 'completed',
+      completedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+      certificateId: makeCertificateId(),
+      certificateIssuedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+      quizResults: createdCourses[10].modules.map((m, idx) => ({
+        moduleId: String(m._id),
+        score: 3,
+        total: 3,
+        passed: true,
+        attemptedAt: new Date(Date.now() - (9 - idx) * 24 * 60 * 60 * 1000)
+      }))
+    });
+    await Progress.create({
+      userId: priya._id,
+      courseId: createdCourses[5]._id,
+      completedModules: createdCourses[5].modules.slice(0, 2).map((m) => ({ moduleId: String(m._id) })),
+      progressPercentage: 66,
+      status: 'in-progress'
+    });
+
+    // Arun: completed SQL with certificate, 33% Cybersecurity
+    await Progress.create({
+      userId: arun._id,
+      courseId: createdCourses[11]._id,
+      completedModules: createdCourses[11].modules.map((m) => ({ moduleId: String(m._id) })),
+      progressPercentage: 100,
+      status: 'completed',
+      completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      certificateId: makeCertificateId(),
+      certificateIssuedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      quizResults: createdCourses[11].modules.map((m, idx) => ({
+        moduleId: String(m._id),
+        score: idx === 1 ? 2 : 3,
+        total: 3,
+        passed: true,
+        attemptedAt: new Date(Date.now() - (5 - idx) * 24 * 60 * 60 * 1000)
+      }))
+    });
+    await Progress.create({
+      userId: arun._id,
+      courseId: createdCourses[6]._id,
+      completedModules: [{ moduleId: String(createdCourses[6].modules[0]._id) }],
+      progressPercentage: 33,
+      status: 'in-progress'
+    });
+
+    // Nisha: 66% React, 33% DevOps
+    await Progress.create({
+      userId: nisha._id,
+      courseId: createdCourses[2]._id,
+      completedModules: createdCourses[2].modules.slice(0, 2).map((m) => ({ moduleId: String(m._id) })),
+      progressPercentage: 66,
+      status: 'in-progress'
+    });
+    await Progress.create({
+      userId: nisha._id,
+      courseId: createdCourses[10]._id,
+      completedModules: [{ moduleId: String(createdCourses[10].modules[0]._id) }],
+      progressPercentage: 33,
+      status: 'in-progress'
+    });
+
     console.log('\n--- Sample Login Credentials ---');
     console.log('Admin: admin@example.com / admin123');
     console.log('Students:');
@@ -3524,6 +3821,9 @@ async function seedDatabase() {
     console.log('  sarah@example.com / sarah123 (Advanced - Python✓, Deep Learning, AWS)');
     console.log('  tom@example.com / tom123 (Intermediate - Cybersecurity, AWS)');
     console.log('  emily@example.com / emily123 (Beginner - ML, Python)');
+    console.log('  priya@example.com / priya123 (Intermediate - DevOps, AWS✓ + certificate)');
+    console.log('  arun@example.com / arun123 (Beginner - SQL✓ + certificate, Cybersecurity)');
+    console.log('  nisha@example.com / nisha123 (Advanced - React, DevOps)');
     console.log('--------------------------------\n');
 
     process.exit(0);
