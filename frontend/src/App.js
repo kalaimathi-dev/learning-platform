@@ -26,19 +26,6 @@ function App() {
     return user.role === 'admin';
   };
 
-  // Protected Route with Sidebar layout
-  const ProtectedRoute = ({ children }) => {
-    if (!isAuthenticated()) return <Navigate to="/login" />;
-    return (
-      <div className="app-layout">
-        <Sidebar />
-        <main className="main-content">
-          {children}
-        </main>
-      </div>
-    );
-  };
-
   // Student-only route (redirects admin to admin panel)
   const StudentRoute = ({ children }) => {
     if (!isAuthenticated()) return <Navigate to="/login" />;
